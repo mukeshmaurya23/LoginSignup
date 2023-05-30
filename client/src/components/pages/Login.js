@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import { use } from "../../../../server/Routers/user";
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -18,14 +19,17 @@ const Login = () => {
       });
 
       if (response.ok) {
-        const { token } = await response.json();
+        const { token, user } = await response.json();
 
         // Save the token in local storage or session storage
-        localStorage.setItem("token", token);
 
         // Redirect to home page
         if (token) {
           toast.success("Login Success");
+          localStorage.setItem("token", token);
+          //set name and email in localstorage
+          localStorage.setItem("user", JSON.stringify(user));
+
           navigate("/home");
         }
       } else {

@@ -1,6 +1,25 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 
 const Table = () => {
+  const [userData, setUserData] = useState([]);
+
+  useEffect(() => {
+    fetchUserDetails();
+  }, []);
+  const fetchUserDetails = async () => {
+    const url = "http://localhost:5000/api/userdetails";
+    try {
+      const response = await fetch(url, {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+      });
+      const data = await response.json();
+      setUserData(data);
+    } catch (error) {
+      console.error("Error during login:", error);
+    }
+  };
+
   return (
     <div className="p-4">
       <div className="flex justify-between mb-4">
@@ -34,32 +53,34 @@ const Table = () => {
         </button>
       </div>
       <table className="min-w-full bg-white border border-gray-300">
-        <thead>
+        <thead className="bg-gray-800 text-white">
           <tr>
-            <th className="py-2 px-4 border-b">User Name</th>
-            <th className="py-2 px-4 border-b">Email</th>
-            <th className="py-2 px-4 border-b">Actions</th>
+            <th className="w-1/3 text-left py-3 px-4 uppercase font-semibold text-sm">
+              Name
+            </th>
+            <th className="w-1/3 text-left py-3 px-4 uppercase font-semibold text-sm">
+              Email
+            </th>
+            <th className="text-left py-3 px-4 uppercase font-semibold text-sm">
+              Actions
+            </th>
           </tr>
         </thead>
-        <tbody>
-          <tr>
-            <td className="py-2 px-4 border-b">John Doe</td>
-            <td className="py-2 px-4 border-b">john.doe@example.com</td>
-            <td className="py-2 px-4 border-b">
-              <div className="flex items-center">
-                <button className="mr-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded">
+        <tbody className="text-gray-700">
+          {userData.map((user) => (
+            <tr key={user._id}>
+              <td className="w-1/3 text-left py-3 px-4">{user.name}</td>
+              <td className="w-1/3 text-left py-3 px-4">{user.email}</td>
+              <td className="text-left py-3 px-4">
+                <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 m-2 rounded">
                   Edit
                 </button>
-                <button className="mr-2 bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-2 rounded">
-                  View
-                </button>
-                <button className="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded">
+                <button className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 m-2 rounded">
                   Delete
                 </button>
-              </div>
-            </td>
-          </tr>
-          {/* Add more rows here */}
+              </td>
+            </tr>
+          ))}
         </tbody>
       </table>
     </div>

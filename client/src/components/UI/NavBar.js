@@ -3,6 +3,8 @@ import { NavLink } from "react-router-dom";
 const NavBar = () => {
   const [show, setShow] = useState(false);
   const [show1, setShow1] = useState(false);
+  const [model, showModel] = useState(false);
+  const [getToken] = useState(localStorage.getItem("token"));
 
   const setShowHandler1 = () => {
     setShow1((prevState) => !prevState);
@@ -10,6 +12,21 @@ const NavBar = () => {
 
   const setShowHandler = () => {
     setShow((prevState) => !prevState);
+  };
+
+  const showModelHandler = () => {
+    showModel(true);
+  };
+  const closeModelHandler = () => {
+    showModel(false);
+  };
+
+  const logoutHandler = () => {
+    //show model to confirm logout
+    //if user click on yes then remove token from local storage
+    //and redirect to login page
+    localStorage.removeItem("token");
+    window.location.href = "/";
   };
 
   return (
@@ -97,7 +114,27 @@ const NavBar = () => {
                     </svg>
                   )}
                 </button>
-
+                {model && (
+                  <div className="fixed top-0 left-0 w-full h-screen bg-gray-900 bg-opacity-50 flex justify-center items-center">
+                    <div className="bg-white p-5 rounded-lg">
+                      <p>Are you sure you want to logout?</p>
+                      <div className="flex justify-end">
+                        <button
+                          onClick={closeModelHandler}
+                          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 m-3 rounded"
+                        >
+                          No
+                        </button>
+                        <button
+                          onClick={logoutHandler}
+                          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 m-3 rounded"
+                        >
+                          Yes
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                )}
                 {show && (
                   <ul className="fixed bg-slate-400 m-1 p-5 w-[8rem] rounded-lg">
                     <li className="p-1">Work</li>
@@ -139,14 +176,29 @@ const NavBar = () => {
                 </a>
               </li>
               <li>
-                <NavLink
-                  to="/"
-                  className={({ isActive }) =>
-                    isActive ? "text-blue-700" : "text-gray-100"
-                  }
-                >
-                  Login
-                </NavLink>
+                {
+                  //if token is present then show logout button else show login button
+                  getToken ? (
+                    <NavLink
+                      to="/home"
+                      onClick={showModelHandler}
+                      className={({ isActive }) =>
+                        isActive ? "text-blue-700" : "text-gray-100"
+                      }
+                    >
+                      Logout
+                    </NavLink>
+                  ) : (
+                    <NavLink
+                      to="/"
+                      className={({ isActive }) =>
+                        isActive ? "text-blue-700" : "text-gray-100"
+                      }
+                    >
+                      Login
+                    </NavLink>
+                  )
+                }
               </li>
               <li>
                 <NavLink

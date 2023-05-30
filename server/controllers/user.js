@@ -52,6 +52,8 @@ const userLogin = async (req, res) => {
     );
 
     // Send the token as a response
+    console.log("token", token);
+    console.log("user", user);
     res.status(200).json({ token, user });
   } catch (error) {
     console.error("Error during login:", error);
@@ -62,9 +64,7 @@ const userLogin = async (req, res) => {
 const userDetails = async (req, res) => {
   try {
     const data = await User.find();
-    if (data) {
-      res.status(200).json({ data });
-    }
+    res.json(data);
   } catch (err) {
     res.json({ message: "Failed to get data" });
   }
